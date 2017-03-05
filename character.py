@@ -1,6 +1,7 @@
 class Character:
-    def __init__(self, symbol):
-        self.symbol = symbol
+    def __init__(self, displayed_symbol, value):
+        self.displayed_symbol = displayed_symbol
+        self.value = value
         self.marked = False
 
     def mark(self):
