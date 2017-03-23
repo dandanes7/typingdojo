@@ -1,13 +1,20 @@
-
+from hands import Hands
 from text import Text
 
 
+
 class State:
-    def __init__(self):
-        self.text = Text()
+    def __init__(self, snippet_paths):
+        self.text = Text(snippet_paths)
+        self.hands = Hands()
         self.current_key_index = 0
         self.error_counter = 0
         self.keys_pressed_counter = 0
+        self.current_finger = self.get_current_finger()
+
+    def get_current_finger(self):
+        char = self.get_char_at_current_index()
+        return self.hands.get_finger(char.displayed_symbol)
 
     def get_char_at_current_index(self):
         return self.text.letters[self.current_key_index]

@@ -4,17 +4,11 @@ from character import Character
 
 
 class Text:
-    java_hello_world = 'public static void main (String argc[]) {\n    System.out.println("Hello World!");\n};'
-
-    go_hello_world = 'func main() {\n    fmt.Println("Hello World!")\n}'
-
-    # dummy_message = (java_hello_world, go_hello_world)
-    dummy_message = ("hy{\n}...", "hooo{\n}...")
-
-    def __init__(self):
+    def __init__(self, paths):
         self.letters = []
-        selected_fragment = random.randint(0, len(self.dummy_message) - 1)
-        for char in self.dummy_message[selected_fragment]:
+        self.code_snippets = self.load_code_snippets(paths)
+        selected_fragment = random.randint(0, len(self.code_snippets) - 1)
+        for char in self.code_snippets[selected_fragment]:
             if "\n" in char:
                 self.letters.append(Character("↵", "\r"))
                 self.letters.append(Character(char, "\n"))
@@ -27,3 +21,11 @@ class Text:
         for char in self.letters:
             str += char.displayed_symbol
         return str
+
+    def load_code_snippets(self, paths):
+        code_snippets = []
+        for path in paths:
+            with open(path, 'r') as file:
+                snippet = file.read()
+            code_snippets.append(snippet)
+        return code_snippets
