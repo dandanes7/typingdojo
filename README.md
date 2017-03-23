@@ -7,9 +7,10 @@ Learn two-handed touch typing in the typing dojo!
 * python 3.4.3
 * tkinter
 
+
 ### How to practice:
 
-Practice [Touch typing](https://en.wikipedia.org/wiki/Touch_typing) by writing the code that is displayed. Press the keys according to the finger that is indicated (consult fingers & symbols mapping table)
+Practice [touch typing](https://en.wikipedia.org/wiki/Touch_typing) by writing the code that is displayed. Press the keys according to the finger that is indicated
 
 
 #### Fingers And Symbols
