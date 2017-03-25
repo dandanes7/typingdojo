@@ -111,7 +111,7 @@ class TypingDojoGui:
     def check_game_finished(self):
         if self.state.current_key_index == len(self.state.text.get_plain_text()) - 1:
             # Wait a few seconds before refreshing game, so that the player can see score & accuracy
-            time.sleep(3)  # TODO: find something better than sleep to show that current game ended
+            self.show_final_score()
             self.state = State(PATHS)
             # In order to be able to call delete or insert on the text widget, it has to be in 'normal' state
             self.code_fragment_text.configure(state="normal")
@@ -122,10 +122,20 @@ class TypingDojoGui:
             self.code_fragment_text.configure(state="disabled")
             self.state.mark_first()
             self.refresh_markings()
-            self.root.update()
+
             return True
         else:
             return False
+
+    def show_final_score(self):
+        accuracy = (
+                       self.state.keys_pressed_counter - self.state.error_counter) * 100 // self.state.keys_pressed_counter
+        self.score_label_text.set("You have " + str(self.state.error_counter) + " errors out of " +
+                                  str(self.state.keys_pressed_counter) + " touches.\n" +
+                                  "Accuracy:" + str(accuracy) + "%.\n" +
+                                  "Refreshing code fragment in 2 seconds..")
+        self.root.update()
+        time.sleep(2)
 
     def quit(self, event):
         self.root.quit()
