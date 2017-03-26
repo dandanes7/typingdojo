@@ -10,11 +10,17 @@ class State:
         self.current_key_index = 0
         self.error_counter = 0
         self.keys_pressed_counter = 0
-        self.current_finger = self.get_current_finger()
+        self.active_fingers = self.get_active_fingers()
+        self.inactive_fingers = self.get_inactive_fingers()
 
-    def get_current_finger(self):
+
+    def get_active_fingers(self):
         char = self.get_char_at_current_index()
-        return self.hands.get_finger(char.displayed_symbol)
+        return self.hands.get_active_fingers(char.displayed_symbol)
+
+    def get_inactive_fingers(self):
+        char = self.get_char_at_current_index()
+        return self.hands.get_inactive_fingers(char.displayed_symbol)
 
     def get_char_at_current_index(self):
         return self.text.letters[self.current_key_index]

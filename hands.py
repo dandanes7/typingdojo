@@ -1,67 +1,55 @@
-L1 = "Left 1"
-L2 = "Left 2"
-L3 = "Left 3"
-L4 = "Left 4"
-L5 = "Left 5"
+left_thumb = (121,106)
+right_thumb = (162,106)
+left_index = (81,30)
+left_middle = (57,14)
+left_ring = (33,22)
+left_pinky = (10,44)
+right_index = (203,30)
+right_middle = (227,14)
+right_ring = (250,22)
+right_pinky = (274,44)
 
-R1 = "Right 1"
-R2 = "Right 2"
-R3 = "Right 3"
-R4 = "Right 4"
-R5 = "Right 5"
+# Each combination of fingers is mapped to a list that contains:
+#  - a list of tuples that represent the coordinates of those fingers that are going to be highlighted
+#  - the symbols corresponding to that combination of fingers
 
-l1r1="Left1 or Right1"
+# TODO: Classic stuff - this solution is elegant, clearly more intuitive but performance has dropped and the gui freezes when typing too fast...
+FINGER_MAPPING = {"thumbs": [[left_thumb, right_thumb],(" ")],
+                  "left index": [[left_index],("4", "r", "f", "v", "5", "t", "g", "b")],
+                  "left middle": [[left_middle],("3", "e", "d", "c")],
+                  "left ring": [[left_ring],("2", "w", "s", "x")],
+                  "left pinky": [[left_pinky],("1", "q", "a", "z", "`")],
+                  "right index": [[right_index],("7", "u", "j", "m", "6", "y", "h", "n")],
+                  "right middle": [[right_middle],("8", "i", "k", ",")],
+                  "right ring": [[right_ring],("9", "o", "l", ".")],
+                  "right pinky": [[right_pinky],("0", "p", ";", "/", "-", "[", "'", "=", "]", "\\", "↵")],
+                  "left index and right pinky": [[left_index,right_pinky],("$", "R", "F", "V",  "%", "T", "G", "B")],
+                  "left middle and right pinky": [[left_middle,right_pinky],("#", "E", "D", "C")],
+                  "left ring and right pinky": [[left_ring,right_pinky],("@", "W", "S", "X")],
+                  "left pinky and right pinky": [[left_pinky,right_pinky],("!", "Q", "A", "Z", "~")],
+                  "right index and left pinky": [[right_index,left_pinky],("&", "U", "J", "M", "^", "Y", "H", "N")],
+                  "right middle and left pinky": [[right_middle,left_pinky],("*", "I", "K", "<")],
+                  "right ring and left pinky": [[right_ring,left_pinky],("(", "O", "L", ">")],
+                  "right pinky and left pinky": [[right_pinky,left_pinky],(")", "P", ":", "?", "_", "{", "\"", "+", "}", "|")]}
 
-l2 = "left 2"
-l3 = "left 3"
-l4 = "left 4"
-l5 = "left 5"
-
-r2 = "right 2"
-r3 = "right 3"
-r4 = "right 4"
-r5 = "right 5"
-
-FINGER_MAPPING = {l1r1: (" "),
-                  l2: ("4", "r", "f", "v", "5", "t", "g", "b"),
-                  l3: ("3", "e", "d", "c"),
-                  l4: ("2", "w", "s", "x"),
-                  l5: ("1", "q", "a", "z", "`"),
-                  r2: ("7", "u", "j", "m", "6", "y", "h", "n"),
-                  r3: ("8", "i", "k", ","),
-                  r4: ("9", "o", "l", "."),
-                  r5: ("0", "p", ";", "/", "-", "[", "'", "=", "]", "\\", "↵"),
-                  L2: ("$", "R", "F", "V",  "%", "T", "G", "B"),
-                  L3: ("#", "E", "D", "C"),
-                  L4: ("@", "W", "S", "X"),
-                  L5: ("!", "Q", "A", "Z", "~"),
-                  R2: ("&", "U", "J", "M", "^", "Y", "H", "N"),
-                  R3: ("*", "I", "K", "<"),
-                  R4: ("(", "O", "L", ">"),
-                  R5: (")", "P", ":", "?", "_", "{", "\"", "+", "}", "|")}
-
-# TODO: indicating the finger by text is counterintuitive
-# those two gif hands should be replaced, and the fingers should be highlighted
 
 class Hands:
 
-    def get_finger(self, symbol):
-
+    @staticmethod
+    def get_active_fingers(symbol):
         for key in FINGER_MAPPING:
-            if symbol in FINGER_MAPPING[key]:
-                if symbol.isspace():
-                    finger = l1r1
-                elif key[0].isupper():
-                    finger = self.add_shift_finger(key)
-                else:
-                    finger = key
-                return finger.upper()
+            if symbol in FINGER_MAPPING[key][1]:
+                return FINGER_MAPPING[key][0]
 
-    def add_shift_finger(self, key):
-        if key[0] == "L":
-            return (key + " & " + R5)
+    @staticmethod
+    def get_inactive_fingers(symbol):
+        inactive_fingers = []
+        if (symbol.isspace()):
+            for key in FINGER_MAPPING:
+                if key is not "thumbs":
+                    inactive_fingers.extend(FINGER_MAPPING[key][0])
         else:
-            return (L5 + " & " + key)
-
-
-
+            for key in FINGER_MAPPING:
+                if symbol not in FINGER_MAPPING[key][1]:
+                    inactive_fingers.extend(FINGER_MAPPING[key][0])
+        return inactive_fingers

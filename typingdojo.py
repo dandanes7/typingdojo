@@ -6,15 +6,17 @@ from text import Text
 from tkinter import *
 from state import State
 
-# TODO: should fetch snippets from github repository
-# pass github repo address as command line arg
-PATHS = ("sample_code_java.txt", "sample_code_go.txt")
+
+
+HANDS_GIF_PATH = "hands.gif"
+SAMPLES_PATH = ("samples/sample_code_java.txt", "samples/sample_code_go.txt", "samples/sample_code_html.txt")
 BACKGROUND_COLOR = "#CFD8DC"
+ACTIVE_FINGER_COLOR = "#237219"
 
 class TypingDojoGui:
     def __init__(self):
         self.root = Tk()
-        self.state = State(PATHS)
+        self.state = State(SAMPLES_PATH)
         self.current_finger = StringVar()
         self.score_label_text = StringVar()
         self.set_up_gui()
@@ -24,7 +26,7 @@ class TypingDojoGui:
         self.root.config(bg=BACKGROUND_COLOR)
 
     def set_up_gui(self):
-        self.code_fragment_text = Text(self.root, width=110, height=10, relief=SUNKEN)
+        self.code_fragment_text = Text(self.root, width=110, height=12, relief=SUNKEN)
         self.current_finger_label = Label(self.root, width=110, justify='center', bg=BACKGROUND_COLOR,
                                           highlightbackground=BACKGROUND_COLOR, textvariable=self.current_finger)
         self.hands_image_label = Label(self.root, width=300, height=200, bg=BACKGROUND_COLOR,
@@ -42,7 +44,7 @@ class TypingDojoGui:
             self.code_fragment_text.insert('insert', self.state.get_char_at(character_index).displayed_symbol,
                                            character_index)
 
-        self.photo = PhotoImage(file="hands.gif")
+        self.photo = PhotoImage(file=HANDS_GIF_PATH)
         self.hands_image_label.configure(image=self.photo)
 
         # Press ESC to exit
@@ -92,8 +94,18 @@ class TypingDojoGui:
                 self.code_fragment_text.tag_config(index, font=self.regular_font)
 
     def update_current_finger(self):
-        finger = self.state.get_current_finger()
-        self.current_finger.set(finger)
+        active_fingers = self.state.get_active_fingers()
+        inactive_fingers = self.state.get_inactive_fingers()
+        for finger in inactive_fingers:
+            for x in range(14):
+                for y in range(14):
+                    self.photo.put(BACKGROUND_COLOR, (finger[0]+x,finger[1]+y))
+        for finger in active_fingers:
+            for x in range(14):
+                for y in range(14):
+                    self.photo.put(ACTIVE_FINGER_COLOR, (finger[0] + x, finger[1] + y))
+
+
 
     def update_score(self):
         if (self.state.keys_pressed_counter == 0):
@@ -112,7 +124,7 @@ class TypingDojoGui:
         if self.state.current_key_index == len(self.state.text.get_plain_text()) - 1:
             # Wait a few seconds before refreshing game, so that the player can see score & accuracy
             self.show_final_score()
-            self.state = State(PATHS)
+            self.state = State(SAMPLES_PATH)
             # In order to be able to call delete or insert on the text widget, it has to be in 'normal' state
             self.code_fragment_text.configure(state="normal")
             self.code_fragment_text.delete(1.0, END)
